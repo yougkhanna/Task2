@@ -1,0 +1,56 @@
+let timer;
+let isRunning = false;
+let startTime;
+let elapsedTime = 0;
+let laps = [];
+
+function start() {
+    if (!isRunning) {
+        isRunning = true;
+        startTime = Date.now() - elapsedTime;
+        timer = setInterval(updateTime, 10);
+    }
+}
+
+function pause() {
+    if (isRunning) {
+        isRunning = false;
+        clearInterval(timer);
+    }
+}
+
+function reset() {
+    isRunning = false;
+    clearInterval(timer);
+    elapsedTime = 0;
+    updateDisplay();
+    laps = [];
+    updateLaps();
+}
+
+function lap() {
+    if (isRunning) {
+        laps.push(elapsedTime);
+        updateLaps();
+    }
+}
+
+function updateTime() {
+    elapsedTime = Date.now() - startTime;
+    updateDisplay();
+}
+
+function updateDisplay() {
+    let formattedTime = new Date(elapsedTime).toISOString().substr(11, 8);
+    document.getElementById('display').textContent = formattedTime;
+}
+
+function updateLaps() {
+    let lapsList = document.getElementById('laps');
+    lapsList.innerHTML = '';
+    laps.forEach(function (lapTime, index) {
+        let lap = document.createElement('li');
+        lap.textContent = 'Lap ' + (index + 1) + ': ' + new Date(lapTime).toISOString().substr(11, 8);
+        lapsList.appendChild(lap);
+    });
+}
